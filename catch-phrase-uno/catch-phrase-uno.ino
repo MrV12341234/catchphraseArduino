@@ -338,6 +338,10 @@ void doSetup(bool firstTime) {
       delay(10); // wait for serial port to connect. Needed for native USB port only
     }
   }
+
+  println("Catch Phrase - Power On");
+  play_beep(BEEP_POWER_ON);
+
   //SPI.begin();
   println("Catch Phrase - Power On");
   play_beep(BEEP_POWER_ON);
@@ -359,8 +363,9 @@ void doSetup(bool firstTime) {
   pinMode(LCD_PIN_BL, OUTPUT); // added for using UNO, A4 is analog
   pinMode(TRANSISTOR_POWER_PIN, OUTPUT);
 
-
+  // transistor not used. kept this incase i wanted to add.
   digitalWrite(TRANSISTOR_POWER_PIN,HIGH);
+  
   digitalWrite(TEAM1_PIN,HIGH);
   digitalWrite(TEAM2_PIN,HIGH);
   digitalWrite(START_STOP_PIN,HIGH);
@@ -371,6 +376,7 @@ void doSetup(bool firstTime) {
   // Initialize the LCD (16 columns, 2 rows)
   lcd.begin(16, 2);
 
+
   // Write to all display cells.  This shouldn't be needed, but we get
   // corrupt characters occasionally otherwise.
   lcd.setCursor(0,0);
@@ -378,36 +384,52 @@ void doSetup(bool firstTime) {
   lcd.setCursor(0,1);
   lcd.print("                ");
 
+  // ==== SD bring-up (show on LCD too) ====
+  lcd.clear();
+  lcd.setCursor(0,0); lcd.print("Init SD...");
   print("Initializing SD card...");
+
+  pinMode(SD_PIN_CS, OUTPUT);       // keep UNO in SPI master mode
+  digitalWrite(SD_PIN_CS, HIGH);
 
   if (!SD.begin(SD_PIN_CS)) {
     println("initialization failed!");
+    lcd.setCursor(0,1); lcd.print("SD FAIL       ");
     updateDisplay("SD Card Failure!");
     return; 
   }
   println("initialization done.");
   println("Initialized SD Card Reader");
+  lcd.setCursor(0,1); lcd.print("SD OK         ");
+  delay(300);
+
+  // Load and index clues
+  lcd.clear();
+  lcd.setCursor(0, 0); lcd.print("Loading clues");
 
   if (firstTime) {
     println("Being Read File");
     cluefile = readFile("clues.txt");
   }
-  
-  digitalWrite(LCD_PIN_BL,HIGH);
-  updateDisplay(categories[cur_category]);
-  Button::reset_last_button_press();
+  if (!cluefile) {
+    lcd.setCursor(0, 1); lcd.print("clues.txt?");
+    updateDisplay("File Open Error");
+    return;
+  }
 
   // Initialize the LCD (16 columns, 2 rows)
+  // ---- SHOW GAME SCREEN NOW ----
+  Button::reset_last_button_press();
   game_state = CATEGORY_SELECTION;
 
   // Reset the game
   cur_category = 0;
   score_team1 = 0;
   score_team2 = 0;
-
-  updateDisplay(categories[cur_category]);
-  
   is_category_displayed_category_selection_mode = true;
+
+  lcd.clear();
+  updateDisplay(categories[cur_category]);
 }
 
 void rotate_category() {
@@ -458,9 +480,9 @@ void end_current_round() {
 void end_game() {
   if (score_team1 == 7)
   {
-    updateDisplay("Blondes Win!");
+    updateDisplay("Team1 Wins!");
   } else {
-    updateDisplay("Brunettes Win!");
+    updateDisplay("Team2 Wins!");
   }
   play_beep(BEEP_WIN_GAME);
   game_state = GAME_DONE;
