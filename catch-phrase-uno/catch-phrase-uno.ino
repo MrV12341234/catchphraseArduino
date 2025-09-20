@@ -15,20 +15,29 @@
 */
 
 //text file (notepad) must be called words.txt
-//12 characters per LCD line. The formatter tries to split on a space so the clue can use up to 2 lines.
+//14 characters per LCD line. The formatter tries to split on a space so the clue can use up to 2 lines.
 //if a word is longer than 13 characters it gets skipped (no words longer than 13 characters)
 // Blank lines or lines starting with # are ignored.
+
+// Format a clue to fit: TOP=14 chars, BOTTOM=16 chars.
+// Returns a single String with length TOP_TEXT_LEN + BOTTOM_TEXT_LEN.
+// First 14 chars -> top text window; last 16 chars -> bottom line.
+// splits a phrase at a space if total phrase is longer than the top_text length (14).
+// if single word is longer than 14 letters, but no longer than 16, it is displayed on bottom line and top line is left empty (except the scores)
+// any words 17+ letters is skipped.
+// this is my script that works great. Just limited to 120 words per sd card
+
 
 #include <SPI.h>
 #include <SD.h>
 #include <LiquidCrystal.h>
 
-// ===== Pins (your mapping) =====
+// ===== Pins =====
 const byte TRANSISTOR_POWER_PIN = 19; // A5
 const byte START_STOP_PIN = 2;
 const byte TEAM1_PIN      = 3;
 const byte TEAM2_PIN      = 4;
-const byte NEXT_PIN       = 5;  // Next word
+const byte NEXT_PIN       = 5;
 const byte CATEGORY_PIN   = 6;  // Mute toggle
 const byte SPEAKER_PIN    = 7;
 
@@ -40,25 +49,23 @@ const byte LCD_PIN_D4 = 14; // A0
 const byte LCD_PIN_D5 = 15; // A1
 const byte LCD_PIN_D6 = 16; // A2
 const byte LCD_PIN_D7 = 17; // A3
-const byte LCD_PIN_BL = 18; // A4
+const byte LCD_PIN_BL = 18; // A4 backlight power (must go through 220 ohm resister before LCD pin)
 
 // ===== LCD + SD =====
 LiquidCrystal lcd(LCD_PIN_RS, LCD_PIN_E, LCD_PIN_D4, LCD_PIN_D5, LCD_PIN_D6, LCD_PIN_D7);
 File wordsFile;
 
-// ===== Scores (global so showScoresAndText sees them) =====
+// ===== Scores =====
 int score_team1 = 0;
 int score_team2 = 0;
 
 // ===== Display formatting =====
-// Top row: [scoreL][ 14-char text ][scoreR]  => total 16 columns
-// Bottom row: full 16-char window
 #define TOP_TEXT_LEN     14
 #define BOTTOM_TEXT_LEN  16
 
 String pad_center(String text, uint8_t width) {
   text.trim();
-  if (text.length() > width) return "";   // too long for this line
+  if (text.length() > width) return "";   // too long
   uint8_t leftPad  = (width - text.length()) / 2;
   uint8_t rightPad = width - text.length() - leftPad;
   String s;
@@ -68,15 +75,33 @@ String pad_center(String text, uint8_t width) {
   return s;
 }
 
-// Format a clue to fit: TOP=14 chars, BOTTOM=16 chars.
-// Returns a single String with length TOP_TEXT_LEN + BOTTOM_TEXT_LEN.
-// First 14 chars -> top text window; last 16 chars -> bottom line.
-// splits a phrase at a space if total phrase is longer than the top_text length (14).
-// if single word is longer than 14 letters, it is displayed on bottom line and top line is left empty (except the scores)
+// ---- VALIDATOR (no padding): decides if the raw line can be displayed
+bool canDisplayRaw(const String &raw) {
+  String t = raw; t.trim();
+  if (t.length() == 0)       return false;     // blank
+  if (t.startsWith("#"))     return false;     // comment
+
+  // Single token: <=16 allowed (15–16 goes on bottom row)
+  if (t.indexOf(' ') < 0) {
+    return (t.length() <= BOTTOM_TEXT_LEN);
+  }
+
+  // Has spaces: fits entirely on top (<=14) OR split at last space within 14 with bottom <=16
+  if (t.length() <= TOP_TEXT_LEN) return true;
+
+  int cut = t.lastIndexOf(' ', TOP_TEXT_LEN);
+  if (cut < 0) return false;                   // first token too long for top
+
+  String bottom = t.substring(cut + 1);
+  bottom.trim();
+  return (bottom.length() <= BOTTOM_TEXT_LEN);
+}
+
+// ---- FORMATTER (padding + centering): the version you liked
 String format_for_lcd(String text) {
   text.trim();
 
-  auto pad_center = [](const String &t, uint8_t width) {
+  auto pad = [](const String &t, uint8_t width) {
     String s = t; s.trim();
     if (s.length() > width) return String(""); // fail
     uint8_t left  = (width - s.length()) / 2;
@@ -89,20 +114,20 @@ String format_for_lcd(String text) {
   };
 
   if (text.length() == 0) {
-    return pad_center("", TOP_TEXT_LEN) + pad_center("", BOTTOM_TEXT_LEN);
+    return pad("", TOP_TEXT_LEN) + pad("", BOTTOM_TEXT_LEN);
   }
 
-  // ---- NEW: single long token (no spaces) of 15–16 chars -> show on bottom line ----
+  // Single long token (no spaces) of 15–16 chars -> show on bottom line
   if (text.indexOf(' ') < 0 && text.length() > TOP_TEXT_LEN && text.length() <= BOTTOM_TEXT_LEN) {
-    String top    = pad_center("",   TOP_TEXT_LEN);     // blank top window
-    String bottom = pad_center(text, BOTTOM_TEXT_LEN);  // word centered on full bottom row
+    String top    = pad("",   TOP_TEXT_LEN);     // blank top window
+    String bottom = pad(text, BOTTOM_TEXT_LEN);  // word centered on full bottom row
     return (bottom.length() == 0) ? String("") : (top + bottom);
   }
 
   // Fits entirely on top?
   if (text.length() <= TOP_TEXT_LEN) {
-    String top    = pad_center(text, TOP_TEXT_LEN);
-    String bottom = pad_center("",   BOTTOM_TEXT_LEN);
+    String top    = pad(text, TOP_TEXT_LEN);
+    String bottom = pad("",   BOTTOM_TEXT_LEN);
     return (top.length() == 0 || bottom.length() == 0) ? String("") : (top + bottom);
   }
 
@@ -121,8 +146,8 @@ String format_for_lcd(String text) {
     return String(""); // bottom would overflow
   }
 
-  String top    = pad_center(topPart, TOP_TEXT_LEN);
-  String bottom = pad_center(botPart, BOTTOM_TEXT_LEN);
+  String top    = pad(topPart, TOP_TEXT_LEN);
+  String bottom = pad(botPart, BOTTOM_TEXT_LEN);
   return (top.length() == 0 || bottom.length() == 0) ? String("") : (top + bottom);
 }
 
@@ -132,18 +157,14 @@ void lcdClearLine(byte row) {
 }
 
 void showScoresAndText(const String &mainText) {
-  // mainText comes from format_for_lcd(): first 14 chars top-window, last 16 bottom-line
   String topWin = mainText.substring(0, TOP_TEXT_LEN);
   String bot    = mainText.substring(TOP_TEXT_LEN); // 16 chars
 
-  // Top: put left score at col0, right score at col15, and the 14-char window in between
-  lcd.setCursor(0,0);  lcd.print(score_team1);   // col 0
-  lcd.setCursor(1,0);  lcd.print(topWin);        // cols 1..14
-  lcd.setCursor(15,0); lcd.print(score_team2);   // col 15
+  lcd.setCursor(0,0);  lcd.print(score_team1);
+  lcd.setCursor(1,0);  lcd.print(topWin);
+  lcd.setCursor(15,0); lcd.print(score_team2);
 
-  // Bottom: draw the full 16-char centered line
-  lcd.setCursor(0,1);
-  lcd.print(bot);
+  lcd.setCursor(0,1);  lcd.print(bot);
 }
 
 // ===== Debounced buttons =====
@@ -185,13 +206,12 @@ bool next_is_tic = true;
 unsigned long last_tictoc_millis = 0;
 unsigned long last_beep_speed_change_millis = 0;
 
-// ===== Random word index (offset table, shuffled in-place) =====
-// Keep memory small for Uno
-const uint16_t MAX_WORDS = 120;               // ~480 bytes (120 * 4B) — SAFE for Uno
+// ===== Batched indexing from SD (RAM-light) =====
+const uint16_t MAX_WORDS = 120;        // ~480 bytes RAM (120 * 4B)
 unsigned long wordOffsets[MAX_WORDS];
-uint16_t wordCount = 0;
-uint16_t wordPos = 0;
-bool rng_seeded = false;
+uint16_t wordCount = 0;                // size of current batch
+uint16_t wordPos   = 0;                // cursor within current batch
+unsigned long scanPos = 0;             // where the next batch scan starts in words.txt
 
 void fisherYatesShuffleOffsets() {
   if (wordCount <= 1) return;
@@ -203,36 +223,50 @@ void fisherYatesShuffleOffsets() {
   }
 }
 
-bool indexWords() {
-  wordCount = 0;
-  wordsFile.seek(0);
-  while (true) {
-    unsigned long startPos = wordsFile.position();
-    String line = wordsFile.readStringUntil('\n');
-    if (line.length() == 0 && !wordsFile.available()) break; // EOF
+// Load a batch of up to MAX_WORDS displayable offsets.
+// Scans starting at scanPos; if none found, wraps to 0 once.
+bool loadNextBatch() {
+  for (uint8_t pass = 0; pass < 2; ++pass) {
+    wordCount = 0;
+    wordPos   = 0;
 
-    String copy = line; copy.trim();
-    if (copy.length() == 0) continue;            // skip blanks
-    if (copy.startsWith("#")) continue;          // skip comments
-    if (format_for_lcd(copy).length() == 0) continue; // too long to display nicely
+    unsigned long startScan = (pass == 0) ? scanPos : 0;
+    wordsFile.seek(startScan);
 
-    if (wordCount < MAX_WORDS) {
+    bool reachedEOF = false;
+
+    while (wordCount < MAX_WORDS) {
+      unsigned long startPos = wordsFile.position();
+      String line = wordsFile.readStringUntil('\n');
+      if (line.length() == 0 && !wordsFile.available()) {
+        reachedEOF = true;
+        break;
+      }
+
+      String copy = line; copy.trim();
+      if (copy.length() == 0) continue;        // blank
+      if (copy.startsWith("#")) continue;      // comment
+      if (!canDisplayRaw(copy)) continue;      // <<< IMPORTANT: validate only
+
       wordOffsets[wordCount++] = startPos;
-    } else {
-      // hit cap — ignore remainder to save RAM
-      break;
     }
+
+    // Set next scanPos correctly
+    if (reachedEOF) scanPos = 0;
+    else            scanPos = wordsFile.position();
+
+    if (wordCount > 0) {
+      fisherYatesShuffleOffsets();
+      return true;   // got a batch
+    }
+    // else: try wrapped pass (pass=1) starting at 0
   }
-  wordPos = 0;
-  fisherYatesShuffleOffsets();
-  return wordCount > 0;
+  return false;      // no usable lines found at all
 }
 
 bool getNextRandomWord(String &out) {
-  if (wordCount == 0) return false;
   if (wordPos >= wordCount) {
-    fisherYatesShuffleOffsets();
-    wordPos = 0;
+    if (!loadNextBatch()) return false;
   }
   unsigned long off = wordOffsets[wordPos++];
   wordsFile.seek(off);
@@ -266,11 +300,13 @@ void startRound() {
   last_tictoc_millis = 0;
   last_beep_speed_change_millis = millis();
 
-  if (!getNextRandomWord(currentWord)) {
+  String w;
+  if (!getNextRandomWord(w)) {
     lcd.clear(); lcd.setCursor(0,0); lcd.print(F("No words indexed"));
     lcd.setCursor(0,1); lcd.print(F("Check words.txt"));
     return;
   }
+  currentWord = w;
   showWord(currentWord);
 }
 
@@ -328,16 +364,19 @@ void setup() {
     while (1) { }
   }
 
-  // Index and shuffle
-  if (!indexWords()) {
-    lcd.setCursor(0,1); lcd.print(F("No words found"));
+  // Prepare first batch (and show status briefly)
+  lcd.setCursor(0,1); lcd.print(F("Index batch...  "));
+  scanPos = 0;
+  if (!loadNextBatch()) {
+    lcd.setCursor(0,1); lcd.print(F("No words found  "));
     while (1) { }
   }
+  lcd.setCursor(0,1); lcd.print(F("Ready           "));
 
-  // Seed RNG on boot (extra entropy later on first button)
-  randomSeed(analogRead(A5)); // floating analog adds some noise
-
+  // Seed RNG
+  randomSeed(analogRead(A5));
   beep_power_on();
+
   String two = format_for_lcd("Press Start");
   showScoresAndText(two);
   gameState = READY;
@@ -351,6 +390,7 @@ void loop() {
   btnNext.update();
   btnMute.update();
 
+  static bool rng_seeded = false;
   if (!rng_seeded && (btnStart.justPressed() || btnT1.justPressed() || btnT2.justPressed() || btnNext.justPressed() || btnMute.justPressed())) {
     randomSeed(micros());
     rng_seeded = true;
@@ -376,8 +416,7 @@ void loop() {
       if (btnT1.justPressed()) {
         score_team1++; beep_small();
         if (score_team1 == 7) { lcd.clear(); lcd.setCursor(0,0); lcd.print(F("Team1 Wins!")); gameState = GAME_DONE; }
-        else { String two = format_for_lcd("Press Start");
-        showScoresAndText(two); }
+        else { String two = format_for_lcd("Press Start"); showScoresAndText(two); }
       }
       if (btnT2.justPressed()) {
         score_team2++; beep_small();
@@ -389,7 +428,8 @@ void loop() {
     case IN_ROUND:
       if (btnStart.justPressed()) { endRound(false); break; } // stop early
       if (btnNext.justPressed()) {
-        if (getNextRandomWord(currentWord)) showWord(currentWord);
+        String w;
+        if (getNextRandomWord(w)) { currentWord = w; showWord(currentWord); }
       }
       do_tic_toc();
       break;
