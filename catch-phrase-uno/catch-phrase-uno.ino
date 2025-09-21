@@ -1,3 +1,4 @@
+
 /*
   Catchphrase (No Categories)
   Hardware:
@@ -27,6 +28,13 @@
 // any words 17+ letters is skipped.
 // this is my script that works great. Just limited to 120 words per sd card
 
+/*
+  Catchphrase (No Categories)
+  - Keeps one 120-word deck across multiple rounds (no repeats within deck)
+  - Builds the deck on FIRST Start press (not in setup) so the first batch is random each power-up
+  - If words.txt has <=120 usable lines: uses all of them; reshuffles only after all shown once
+  - If words.txt has >120 usable: random 120-sample; rebuilds a new random 120 only when deck is exhausted
+*/
 
 #include <SPI.h>
 #include <SD.h>
@@ -49,7 +57,7 @@ const byte LCD_PIN_D4 = 14; // A0
 const byte LCD_PIN_D5 = 15; // A1
 const byte LCD_PIN_D6 = 16; // A2
 const byte LCD_PIN_D7 = 17; // A3
-const byte LCD_PIN_BL = 18; // A4 backlight power (must go through 220 ohm resister before LCD pin)
+const byte LCD_PIN_BL = 18; // A4 (backlight via 220Ω to LCD A)
 
 // ===== LCD + SD =====
 LiquidCrystal lcd(LCD_PIN_RS, LCD_PIN_E, LCD_PIN_D4, LCD_PIN_D5, LCD_PIN_D6, LCD_PIN_D7);
@@ -65,7 +73,7 @@ int score_team2 = 0;
 
 String pad_center(String text, uint8_t width) {
   text.trim();
-  if (text.length() > width) return "";   // too long
+  if (text.length() > width) return "";
   uint8_t leftPad  = (width - text.length()) / 2;
   uint8_t rightPad = width - text.length() - leftPad;
   String s;
@@ -75,80 +83,58 @@ String pad_center(String text, uint8_t width) {
   return s;
 }
 
-// ---- VALIDATOR (no padding): decides if the raw line can be displayed
+// ---- VALIDATOR (no padding)
 bool canDisplayRaw(const String &raw) {
   String t = raw; t.trim();
   if (t.length() == 0)       return false;     // blank
   if (t.startsWith("#"))     return false;     // comment
 
-  // Single token: <=16 allowed (15–16 goes on bottom row)
   if (t.indexOf(' ') < 0) {
-    return (t.length() <= BOTTOM_TEXT_LEN);
+    return (t.length() <= BOTTOM_TEXT_LEN);    // single token ≤16 ok
   }
 
-  // Has spaces: fits entirely on top (<=14) OR split at last space within 14 with bottom <=16
-  if (t.length() <= TOP_TEXT_LEN) return true;
+  if (t.length() <= TOP_TEXT_LEN) return true; // whole phrase fits top
 
   int cut = t.lastIndexOf(' ', TOP_TEXT_LEN);
-  if (cut < 0) return false;                   // first token too long for top
+  if (cut < 0) return false;                   // first token too long
 
   String bottom = t.substring(cut + 1);
   bottom.trim();
-  return (bottom.length() <= BOTTOM_TEXT_LEN);
+  return (bottom.length() <= BOTTOM_TEXT_LEN); // bottom must fit
 }
 
-// ---- FORMATTER (padding + centering): the version you liked
+// ---- FORMATTER (padding + centering)
 String format_for_lcd(String text) {
   text.trim();
-
   auto pad = [](const String &t, uint8_t width) {
     String s = t; s.trim();
-    if (s.length() > width) return String(""); // fail
-    uint8_t left  = (width - s.length()) / 2;
-    uint8_t right = width - s.length() - left;
-    String out;
-    for (uint8_t i=0;i<left;i++)  out += ' ';
-    out += s;
-    for (uint8_t i=0;i<right;i++) out += ' ';
+    if (s.length() > width) return String("");
+    uint8_t L = (width - s.length()) / 2;
+    uint8_t R = width - s.length() - L;
+    String out; for (uint8_t i=0;i<L;i++) out+=' '; out+=s; for (uint8_t i=0;i<R;i++) out+=' ';
     return out;
   };
 
-  if (text.length() == 0) {
-    return pad("", TOP_TEXT_LEN) + pad("", BOTTOM_TEXT_LEN);
-  }
+  if (text.length() == 0) return pad("", TOP_TEXT_LEN) + pad("", BOTTOM_TEXT_LEN);
 
-  // Single long token (no spaces) of 15–16 chars -> show on bottom line
   if (text.indexOf(' ') < 0 && text.length() > TOP_TEXT_LEN && text.length() <= BOTTOM_TEXT_LEN) {
-    String top    = pad("",   TOP_TEXT_LEN);     // blank top window
-    String bottom = pad(text, BOTTOM_TEXT_LEN);  // word centered on full bottom row
-    return (bottom.length() == 0) ? String("") : (top + bottom);
+    // single token 15–16 -> bottom line centered
+    return pad("", TOP_TEXT_LEN) + pad(text, BOTTOM_TEXT_LEN);
   }
 
-  // Fits entirely on top?
   if (text.length() <= TOP_TEXT_LEN) {
-    String top    = pad(text, TOP_TEXT_LEN);
-    String bottom = pad("",   BOTTOM_TEXT_LEN);
-    return (top.length() == 0 || bottom.length() == 0) ? String("") : (top + bottom);
+    return pad(text, TOP_TEXT_LEN) + pad("", BOTTOM_TEXT_LEN);
   }
 
-  // Two-line split at last space that keeps top within 14
   int lastSpaceTop = text.lastIndexOf(' ', TOP_TEXT_LEN);
-  if (lastSpaceTop < 0) {
-    // First token exceeds 14 and has no spaces -> can't split (and >16 handled above)
-    return String("");
-  }
+  if (lastSpaceTop < 0) return String("");
 
   String topPart = text.substring(0, lastSpaceTop);
   String botPart = text.substring(lastSpaceTop + 1);
   botPart.trim();
+  if (botPart.length() > BOTTOM_TEXT_LEN) return String("");
 
-  if (botPart.length() > BOTTOM_TEXT_LEN) {
-    return String(""); // bottom would overflow
-  }
-
-  String top    = pad(topPart, TOP_TEXT_LEN);
-  String bottom = pad(botPart, BOTTOM_TEXT_LEN);
-  return (top.length() == 0 || bottom.length() == 0) ? String("") : (top + bottom);
+  return pad(topPart, TOP_TEXT_LEN) + pad(botPart, BOTTOM_TEXT_LEN);
 }
 
 void lcdClearLine(byte row) {
@@ -158,12 +144,10 @@ void lcdClearLine(byte row) {
 
 void showScoresAndText(const String &mainText) {
   String topWin = mainText.substring(0, TOP_TEXT_LEN);
-  String bot    = mainText.substring(TOP_TEXT_LEN); // 16 chars
-
+  String bot    = mainText.substring(TOP_TEXT_LEN);
   lcd.setCursor(0,0);  lcd.print(score_team1);
   lcd.setCursor(1,0);  lcd.print(topWin);
   lcd.setCursor(15,0); lcd.print(score_team2);
-
   lcd.setCursor(0,1);  lcd.print(bot);
 }
 
@@ -206,68 +190,108 @@ bool next_is_tic = true;
 unsigned long last_tictoc_millis = 0;
 unsigned long last_beep_speed_change_millis = 0;
 
-// ===== Batched indexing from SD (RAM-light) =====
-const uint16_t MAX_WORDS = 120;        // ~480 bytes RAM (120 * 4B)
-unsigned long wordOffsets[MAX_WORDS];
-uint16_t wordCount = 0;                // size of current batch
-uint16_t wordPos   = 0;                // cursor within current batch
-unsigned long scanPos = 0;             // where the next batch scan starts in words.txt
+// ===== Persistent deck (max 120) =====
+const uint16_t MAX_WORDS = 120;
+unsigned long wordOffsets[MAX_WORDS]; // deck of offsets
+uint16_t wordCount = 0;               // size of current deck (<=120)
+uint16_t wordPos   = 0;               // next index to serve
+uint32_t displayableTotal = 0;        // total usable lines in file (computed when building deck)
+bool deckBuilt = false;               // built yet?
 
-void fisherYatesShuffleOffsets() {
+void fisherYatesShuffleDeck() {
   if (wordCount <= 1) return;
   for (int i = wordCount - 1; i > 0; --i) {
-    int j = random(i + 1); // 0..i
+    int j = random(i + 1);
     unsigned long tmp = wordOffsets[i];
     wordOffsets[i] = wordOffsets[j];
     wordOffsets[j] = tmp;
   }
 }
 
-// Load a batch of up to MAX_WORDS displayable offsets.
-// Scans starting at scanPos; if none found, wraps to 0 once.
-bool loadNextBatch() {
-  for (uint8_t pass = 0; pass < 2; ++pass) {
-    wordCount = 0;
-    wordPos   = 0;
-
-    unsigned long startScan = (pass == 0) ? scanPos : 0;
-    wordsFile.seek(startScan);
-
-    bool reachedEOF = false;
-
-    while (wordCount < MAX_WORDS) {
-      unsigned long startPos = wordsFile.position();
-      String line = wordsFile.readStringUntil('\n');
-      if (line.length() == 0 && !wordsFile.available()) {
-        reachedEOF = true;
-        break;
-      }
-
-      String copy = line; copy.trim();
-      if (copy.length() == 0) continue;        // blank
-      if (copy.startsWith("#")) continue;      // comment
-      if (!canDisplayRaw(copy)) continue;      // <<< IMPORTANT: validate only
-
-      wordOffsets[wordCount++] = startPos;
-    }
-
-    // Set next scanPos correctly
-    if (reachedEOF) scanPos = 0;
-    else            scanPos = wordsFile.position();
-
-    if (wordCount > 0) {
-      fisherYatesShuffleOffsets();
-      return true;   // got a batch
-    }
-    // else: try wrapped pass (pass=1) starting at 0
-  }
-  return false;      // no usable lines found at all
+// RNG seeding — use human timing jitter
+void reseedRNG() {
+  unsigned long t = micros() ^ (millis() << 16);
+  randomSeed(t);
 }
 
-bool getNextRandomWord(String &out) {
-  if (wordPos >= wordCount) {
-    if (!loadNextBatch()) return false;
+// Build a deck (once or when exhausted):
+// - If total usable lines <=120: use ALL of them (wordCount = total), shuffled.
+// - If >120: pick a random 120-sample via reservoir sampling.
+// Returns false if no usable lines found.
+bool buildDeckReservoir() {
+  wordsFile.seek(0);
+  displayableTotal = 0;
+  wordCount = 0;
+
+  while (true) {
+    unsigned long startPos = wordsFile.position();
+    String line = wordsFile.readStringUntil('\n');
+    if (line.length() == 0 && !wordsFile.available()) break;
+
+    String t = line; t.trim();
+    if (t.length() == 0) continue;
+    if (t.startsWith("#")) continue;
+    if (!canDisplayRaw(t)) continue;
+
+    displayableTotal++;
+    if (wordCount < MAX_WORDS) {
+      wordOffsets[wordCount++] = startPos;
+    } else {
+      // reservoir sampling
+      uint32_t j = (uint32_t)random(displayableTotal); // 0..displayableTotal-1
+      if (j < MAX_WORDS) wordOffsets[j] = startPos;
+    }
   }
+
+  if (displayableTotal == 0) return false;
+  if (displayableTotal < MAX_WORDS) wordCount = (uint16_t)displayableTotal;
+
+  fisherYatesShuffleDeck();
+  wordPos = 0;
+  deckBuilt = true;
+  return true;
+}
+
+// function for displaying the word loading in the center. called in getNextWordFromDeck(). Shown both at the start of the game when the game is loading 
+// the first batch. Also shown if in the middle of a round, the current batch of 120 words is exhausted.
+void showLoading() {
+  // show "Loading..." centered-ish on the bottom row
+  lcd.setCursor(0,1);
+  lcd.print("                ");  // clear bottom
+  lcd.setCursor(3,1);            // rough center for 10 chars
+  lcd.print("Loading...");
+}
+
+
+// Serve next word; if deck exhausted, rebuild per rules
+bool getNextWordFromDeck(String &out) {
+  // Need a deck for the first time OR we’ve exhausted the current deck
+  // if current 120 word deck is exhausted during a round, pause timer & show the loading splash for the brief pause
+  if (!deckBuilt || wordPos >= wordCount) {
+    unsigned long pauseStart = millis();
+    showLoading();
+
+    if (!deckBuilt) {
+      // First-time build
+      reseedRNG();
+      if (!buildDeckReservoir()) return false;
+    } else if (displayableTotal <= MAX_WORDS) {
+      // ≤120 usable total: reshuffle same full set after it’s all been shown
+      fisherYatesShuffleDeck();
+      wordPos = 0;
+    } else {
+      // >120 usable: build a fresh random 120-sample
+      reseedRNG();
+      if (!buildDeckReservoir()) return false;
+    }
+
+    // Don’t consume round time during the brief load
+    unsigned long pauseDur = millis() - pauseStart;
+    last_tictoc_millis += pauseDur;
+    last_beep_speed_change_millis += pauseDur;
+  }
+
+  // Serve next word
   unsigned long off = wordOffsets[wordPos++];
   wordsFile.seek(off);
   String line = wordsFile.readStringUntil('\n');
@@ -294,6 +318,9 @@ void showWord(const String &word) {
 }
 
 void startRound() {
+  lcd.clear();
+  // IMPORTANT: do NOT build/reshuffle deck here.
+  // We keep the deck persistent across rounds and only rebuild when exhausted.
   gameState = IN_ROUND;
   cur_beep_interval = 0;
   next_is_tic = true;
@@ -301,7 +328,7 @@ void startRound() {
   last_beep_speed_change_millis = millis();
 
   String w;
-  if (!getNextRandomWord(w)) {
+  if (!getNextWordFromDeck(w)) {
     lcd.clear(); lcd.setCursor(0,0); lcd.print(F("No words indexed"));
     lcd.setCursor(0,1); lcd.print(F("Check words.txt"));
     return;
@@ -364,19 +391,10 @@ void setup() {
     while (1) { }
   }
 
-  // Prepare first batch (and show status briefly)
-  lcd.setCursor(0,1); lcd.print(F("Index batch...  "));
-  scanPos = 0;
-  if (!loadNextBatch()) {
-    lcd.setCursor(0,1); lcd.print(F("No words found  "));
-    while (1) { }
-  }
-  lcd.setCursor(0,1); lcd.print(F("Ready           "));
+  // NOTE: We intentionally do NOT build the deck in setup().
+  // This keeps the first batch truly random (we seed & build on first Start press).
 
-  // Seed RNG
-  randomSeed(analogRead(A5));
   beep_power_on();
-
   String two = format_for_lcd("Press Start");
   showScoresAndText(two);
   gameState = READY;
@@ -389,12 +407,6 @@ void loop() {
   btnT2.update();
   btnNext.update();
   btnMute.update();
-
-  static bool rng_seeded = false;
-  if (!rng_seeded && (btnStart.justPressed() || btnT1.justPressed() || btnT2.justPressed() || btnNext.justPressed() || btnMute.justPressed())) {
-    randomSeed(micros());
-    rng_seeded = true;
-  }
 
   if (btnMute.justPressed()) {
     muted = !muted;
@@ -429,7 +441,7 @@ void loop() {
       if (btnStart.justPressed()) { endRound(false); break; } // stop early
       if (btnNext.justPressed()) {
         String w;
-        if (getNextRandomWord(w)) { currentWord = w; showWord(currentWord); }
+        if (getNextWordFromDeck(w)) { currentWord = w; showWord(currentWord); }
       }
       do_tic_toc();
       break;
