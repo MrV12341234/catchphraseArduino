@@ -1,7 +1,46 @@
 # catchphraseArduino
 
-Catchphrase (No Categories)
-==Hardware needed:
+==Creating the text file==
+
+The text file (notepad) on the sd card must be called "words.txt"
+See examples in Clues folder.
+
+
+Blank lines or lines starting with # are ignored.
+
+Format a clue to fit: TOP Row=14 chars, BOTTOM=16 chars.
+First 14 chars -> top text window; last 16 chars -> bottom line.
+
+The game Splits a phrase at a space if total phrase is longer than the top row length (14).
+
+If a single word is 15 or 16 letters, it is displayed on bottom line 
+and top line is left empty (except the scores)
+
+Any words with 17+ letters is skipped.
+
+
+
+==Basic game/coding operation ==
+
+Upon game launch, press start button to begin. 
+Arduino scans the words.txt file and selects 120 words from your list of words
+(this takes a few seconds depending on the word count). 
+Those 120 words are used until all have been displayed. No matter how many rounds.
+When you reach the end of the 120 word batch (likely in the middle of a round), the timer stops and
+a new set of 120 words is loaded from your words.txt file. (you will see "Loading..." on screen).
+
+At the end of each round (at loud buzzer), game will go back to "Press Start" screen. 
+Whoever is holding the device now loses the round.
+Award 1 point to the other team (press Team 1 or team 2 button).
+
+First team to 7 wins.
+
+**if your words.txt file has less than 120 words, the game will cycle through your list of words
+and repeat the same words again but in a different order (all random).
+
+
+==Hardware needed==
+
     - Arduino Uno (or nano)
     - 1602A LCD screen (parallel) on pins RS=8, E=9, D4=A0(14), D5=A1(15), D6=A2(16), D7=A3(17)
     - SD TF card reader (CS=10, MOSI=11, MISO=12, SCK=13)
@@ -12,6 +51,7 @@ Catchphrase (No Categories)
         TEAM2      = D4
         NEXT       = D5
         CATEGORY   = D6  (repurposed as MUTE toggle in my script since no categories)
+
 
 ==Wiring==
 
@@ -53,19 +93,3 @@ GND ==> K (on LCD)
 D7 ==> buzzer positive
 Gnd ==> buzzer negative
 
-
-
-
-==Creating the text file==
-The text file (notepad) on the sd card must be called "words.txt"
-
-
-Blank lines or lines starting with # are ignored.
-
-Format a clue to fit: TOP Row=14 chars, BOTTOM=16 chars.
-Returns a single String with length TOP_TEXT_LEN + BOTTOM_TEXT_LEN.
-First 14 chars -> top text window; last 16 chars -> bottom line.
-Splits a phrase at a space if total phrase is longer than the top row length (14).
-If single word is longer than 14 letters, but no longer than 16, it is displayed on bottom line 
-and top line is left empty (except the scores)
-Any words 17+ letters is skipped (small delay in gameplay when game comes upon a long word).

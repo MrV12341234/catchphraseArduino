@@ -1,0 +1,81 @@
+Latitude
+Longitude
+Equator
+Prime Meridian
+North Pole
+South Pole
+Pacific Ocean
+Atlantic Ocean
+Arctic Ocean
+Southern Ocean
+Indian Ocean
+North America
+South America
+Africa
+Europe
+Asia
+Antarctica
+Movement
+Region
+HEI
+Location
+Place
+Relative Location
+Absolute Location
+Compass Rose
+Scale bar
+Title
+Border
+Archipelago
+Atoll
+Basin
+Bay
+Butte
+Canal
+Canyon
+Cape
+Cave
+Channel
+Col
+Continent
+Desert
+Estuary
+Fjord
+Glacier
+Hill
+Island
+Isthmus
+Lake
+Landform
+Lowland
+Mesa
+Mountain
+Ocean
+Peninsula
+Plain
+Plateau
+Pond
+River
+Sand Dunes
+Sea
+Stream
+Tributary
+Valley
+Volcano
+Waterfall
+Wetland
+River
+Tree
+Key
+Legend
+Physical Map
+Thematic map
+Special map
+North
+East
+South
+West
+Northeast
+Northwest
+Southeast
+Southwest
