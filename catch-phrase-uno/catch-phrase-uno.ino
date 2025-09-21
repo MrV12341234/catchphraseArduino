@@ -301,14 +301,41 @@ bool getNextWordFromDeck(String &out) {
 }
 
 // ===== Beeps =====
-void beep_tic()      { if (!muted) tone(SPEAKER_PIN, 300, 30); }
+void beep_tic()      { 
+  if (!muted) 
+  tone(SPEAKER_PIN, 300, 30); 
+  }
 void beep_toc()      { if (!muted) tone(SPEAKER_PIN, 300, 30); }
 void beep_times_up() {
-  if (!muted) { tone(SPEAKER_PIN, 300, 300); delay(300); tone(SPEAKER_PIN, 300, 300); delay(300); tone(SPEAKER_PIN, 300, 300); }
+  if (!muted) { 
+    tone(SPEAKER_PIN, 300, 300); 
+    delay(300); 
+    tone(SPEAKER_PIN, 300, 300); 
+    delay(300); 
+    tone(SPEAKER_PIN, 300, 300);
+    delay(300);
+    tone(SPEAKER_PIN, 300, 300); 
+    delay(300); 
+    tone(SPEAKER_PIN, 300, 300); 
+    delay(300); 
+    tone(SPEAKER_PIN, 300, 300); 
+    }
   else { delay(900); }
 }
 void beep_power_on() { if (!muted) tone(SPEAKER_PIN, 300, 30); }
 void beep_small()    { if (!muted) tone(SPEAKER_PIN, 300, 30); }
+void beep_win_game() {
+  if (muted) return;
+  for (int i = 0; i < 3; ++i) {
+    tone(SPEAKER_PIN, 300, 250);
+    delay(100);
+    tone(SPEAKER_PIN, 400, 250);
+    delay(100);
+    tone(SPEAKER_PIN, 500, 250);
+    delay(100);
+  }
+}
+
 
 // ===== Round flow =====
 void showWord(const String &word) {
@@ -427,13 +454,28 @@ void loop() {
       if (btnStart.justPressed()) startRound();
       if (btnT1.justPressed()) {
         score_team1++; beep_small();
-        if (score_team1 == 7) { lcd.clear(); lcd.setCursor(0,0); lcd.print(F("Team1 Wins!")); gameState = GAME_DONE; }
-        else { String two = format_for_lcd("Press Start"); showScoresAndText(two); }
+        if (score_team1 == 7) { 
+          lcd.clear(); 
+          lcd.setCursor(0,0); 
+          lcd.print(F("Team 1 Wins!")); 
+          beep_win_game();
+          gameState = GAME_DONE; }
+        else { 
+          String two = format_for_lcd("Press Start"); 
+          showScoresAndText(two); 
+          }
       }
       if (btnT2.justPressed()) {
         score_team2++; beep_small();
-        if (score_team2 == 7) { lcd.clear(); lcd.setCursor(0,0); lcd.print(F("Team2 Wins!")); gameState = GAME_DONE; }
-        else { String two = format_for_lcd("Press Start"); showScoresAndText(two); }
+        if (score_team2 == 7) { 
+          lcd.clear(); 
+          lcd.setCursor(0,0); 
+          lcd.print(F("Team 2 Wins!"));
+          beep_win_game();
+          gameState = GAME_DONE; }
+        else { String two = format_for_lcd("Press Start"); 
+        showScoresAndText(two); 
+        }
       }
       break;
 
