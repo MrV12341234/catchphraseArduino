@@ -33,7 +33,6 @@
 #include <LiquidCrystal.h>
 
 // ===== Pins =====
-const byte TRANSISTOR_POWER_PIN = 19; // A5
 const byte START_STOP_PIN = 2;
 const byte TEAM1_PIN      = 3;
 const byte TEAM2_PIN      = 4;
@@ -49,7 +48,11 @@ const byte LCD_PIN_D4 = 14; // A0
 const byte LCD_PIN_D5 = 15; // A1
 const byte LCD_PIN_D6 = 16; // A2
 const byte LCD_PIN_D7 = 17; // A3
-const byte LCD_PIN_BL = 18; // A4 (backlight via 220Ω to LCD A)
+const byte LCD_PIN_BL = 18; // A4 (backlight via 220Ω to LCD pin A)
+
+const byte LED_START_STOP_BUTTON = 1; // using TX pin
+const byte LED_CATEGORY_BUTTON = 2; // Using RX pin
+const byte LED_TEAMS_BUTTON = 19; // using A5 as digital pin to light the blue and red button LED
 
 // ===== LCD + SD =====
 LiquidCrystal lcd(LCD_PIN_RS, LCD_PIN_E, LCD_PIN_D4, LCD_PIN_D5, LCD_PIN_D6, LCD_PIN_D7);
@@ -483,7 +486,7 @@ void endRound(bool timesUp = true) {
   gameState = READY;
 
   // Show "Press Start" centered
-  String topC = centerPad("Press Start", TOP_TEXT_LEN);
+  String topC = centerPad("Green: Start", TOP_TEXT_LEN);
   String botC = centerPad("", BOTTOM_TEXT_LEN);
   showScoresAndTextCentered(topC, botC);
 }
@@ -505,8 +508,14 @@ void do_tic_toc() {
 // Setup / Loop
 // ============================================================================
 void setup() {
-  pinMode(TRANSISTOR_POWER_PIN, OUTPUT);
-  digitalWrite(TRANSISTOR_POWER_PIN, HIGH);
+  pinMode(LED_START_STOP_BUTTON, OUTPUT);
+  digitalWrite(LED_START_STOP_BUTTON, HIGH);
+
+  pinMode(LED_TEAMS_BUTTON, OUTPUT);
+  digitalWrite(LED_TEAMS_BUTTON, HIGH);
+
+  pinMode(LED_CATEGORY_BUTTON, OUTPUT);
+  digitalWrite(LED_CATEGORY_BUTTON, HIGH);
 
   pinMode(LCD_PIN_BL, OUTPUT);
   digitalWrite(LCD_PIN_BL, HIGH);
@@ -544,7 +553,7 @@ void setup() {
   beep_power_on();
 
   // Initial screen: "Press Start" centered with scores.
-  String topC = centerPad("Press Start", TOP_TEXT_LEN);
+  String topC = centerPad("Green: Start", TOP_TEXT_LEN); // this message is only displayed on initial starup. Another text
   String botC = centerPad("", BOTTOM_TEXT_LEN);
   showScoresAndTextCentered(topC, botC);
 
@@ -571,7 +580,7 @@ void loop() {
     if (gameState == IN_ROUND) {
       showWord(currentWord);
     } else {
-      String topC = centerPad("Press Start", TOP_TEXT_LEN);
+      String topC = centerPad("Green: Start", TOP_TEXT_LEN);
       String botC = centerPad("", BOTTOM_TEXT_LEN);
       showScoresAndTextCentered(topC, botC);
     }
@@ -586,11 +595,11 @@ void loop() {
         beep_small();
         if (score_team1 == 7) { 
           lcd.clear(); 
-          lcd.setCursor(0,0); lcd.print(F("Team 1 Wins!"));
+          lcd.setCursor(0,0); lcd.print(F("Blue Team Wins!"));
           beep_win_game();
           gameState = GAME_DONE; 
         } else { 
-          String topC = centerPad("Press Start", TOP_TEXT_LEN);
+          String topC = centerPad("Green: Start", TOP_TEXT_LEN);
           String botC = centerPad("", BOTTOM_TEXT_LEN);
           showScoresAndTextCentered(topC, botC);
         }
@@ -601,11 +610,11 @@ void loop() {
         beep_small();
         if (score_team2 == 7) { 
           lcd.clear(); 
-          lcd.setCursor(0,0); lcd.print(F("Team 2 Wins!"));
+          lcd.setCursor(0,0); lcd.print(F("Red Team Wins!"));
           beep_win_game();
           gameState = GAME_DONE; 
         } else { 
-          String topC = centerPad("Press Start", TOP_TEXT_LEN);
+          String topC = centerPad("Green: Start", TOP_TEXT_LEN);
           String botC = centerPad("", BOTTOM_TEXT_LEN);
           showScoresAndTextCentered(topC, botC);
         }
@@ -630,7 +639,7 @@ void loop() {
       if (btnStart.justPressed()) {
         score_team1 = 0; 
         score_team2 = 0;
-        String topC = centerPad("Press Start", TOP_TEXT_LEN);
+        String topC = centerPad("Green: Start", TOP_TEXT_LEN);
         String botC = centerPad("", BOTTOM_TEXT_LEN);
         showScoresAndTextCentered(topC, botC);
         gameState = READY;

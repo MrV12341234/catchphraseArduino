@@ -51,6 +51,8 @@ and repeat the same words again but in a different order (all random).
         TEAM2      = D4
         NEXT       = D5
         CATEGORY   = D6  (repurposed as MUTE toggle in my script since no categories)
+    - IRLZ44N N-Channel MOSFET transistor (to power 4 button leds from the battery)
+    - battery (mine is 12v 3S lithium w/ DC5.5*2.1mm ends. Fuse right after)
 
 
 ==Wiring==
@@ -74,6 +76,7 @@ D13 ==> SCK
 
 3. 1602A LCD screen
 LCD pins are typically labeled: VSS, VDD, VO, RS, RW, E, D0–D7, A (LED+), K (LED−)
+
 GND ==> VSS (if screen is dim or not coming into focus, add 2nd ground here)
 5v ==> VDD
 5v ==> one side of potentiometer. Other side of potentiometer goes to ground
@@ -93,3 +96,17 @@ GND ==> K (on LCD)
 D7 ==> buzzer positive
 Gnd ==> buzzer negative
 
+5. MOSFET
+
+==Total wire counts==
+
+Total Arduino Grounds (13/14):
+Team 1 button, Team 2 button, start button, Next button, Category (mute) button, SDTF reader,
+LCD VSS, LCD RW, LCD K, buzzer, mosfet, 2x nano, power supply (battery)
+(plus 4 grounds if I light up 4 LED buttons)
+
+Total Arduino 5v (3):
+LCD VDD, Potentiometer, SDTF
+
+12v powers:
+Nano VIN, power-on led, mosfet
