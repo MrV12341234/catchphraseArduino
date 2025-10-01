@@ -66,6 +66,11 @@ TEAM2(D4)==>one side of button. Other side of button to ground
 NEXT(D5)==>one side of button. Other side of button to ground
 CATEGORY(D6)==>one side of button. Other side of button to ground
 
+A5(D19) - Teams button LED (both red team and blue team buttons led light tied together)
+LED Start/Stop Button (D1) using TX pin
+LED Category/Mute button (D0) using RX pin
+
+
 2.SDTF SD card reader
 GND ==> GND
 5v ==> VCC (some card readers require 3.3v. Mine used 5v)
@@ -96,7 +101,10 @@ GND ==> K (on LCD)
 D7 ==> buzzer positive
 Gnd ==> buzzer negative
 
-5. MOSFET
+5. MOSFET (IRLZ44N)
+
+
+
 
 ==Total wire counts==
 

@@ -51,8 +51,110 @@ const byte LCD_PIN_D7 = 17; // A3
 const byte LCD_PIN_BL = 18; // A4 (backlight via 220Ω to LCD pin A)
 
 const byte LED_START_STOP_BUTTON = 1; // using TX pin
-const byte LED_CATEGORY_BUTTON = 2; // Using RX pin
+const byte LED_CATEGORY_BUTTON = 0; // Using RX pin D0
 const byte LED_TEAMS_BUTTON = 19; // using A5 as digital pin to light the blue and red button LED
+
+// ---------------- LED Manager ----------------
+enum LedMode { LED_IDLE, LED_FLASH_GREEN_PROMPT };
+
+struct LedState {
+  LedMode mode = LED_IDLE;
+  bool greenOn = false;
+  bool allPulseOn = false;
+  unsigned long lastToggle = 0;
+  unsigned long pulseUntil = 0;
+};
+
+LedState _leds;
+
+// Call once in setup after you set pinModes for the LED pins
+void leds_begin() {
+  pinMode(LED_START_STOP_BUTTON, OUTPUT);
+  pinMode(LED_CATEGORY_BUTTON, OUTPUT);
+  pinMode(LED_TEAMS_BUTTON, OUTPUT);
+  digitalWrite(LED_START_STOP_BUTTON, LOW);
+  digitalWrite(LED_CATEGORY_BUTTON, LOW);
+  digitalWrite(LED_TEAMS_BUTTON, LOW);
+}
+
+void leds_all(bool on) {
+  digitalWrite(LED_START_STOP_BUTTON,  on ? HIGH : LOW);
+  digitalWrite(LED_CATEGORY_BUTTON, on ? HIGH : LOW);
+  digitalWrite(LED_TEAMS_BUTTON,  on ? HIGH : LOW);
+}
+
+void leds_set_mode(LedMode m) {
+  _leds.mode = m;
+  // Reset mode-specific state
+  _leds.lastToggle = millis();
+  _leds.greenOn = false;
+}
+
+void leds_pulse_all(uint16_t ms = 60) {
+  _leds.allPulseOn = true;
+  _leds.pulseUntil = millis() + ms;
+  leds_all(true);
+}
+
+// Run often from loop(); non-blocking updates
+void leds_update() {
+  unsigned long now = millis();
+
+  // Handle "flash all together" pulse timing (used with beeps)
+  if (_leds.allPulseOn && (long)(now - _leds.pulseUntil) >= 0) {
+    _leds.allPulseOn = false;
+    leds_all(false);
+  }
+
+  // If a pulse is active, it overrides the per-mode animation until it ends
+  if (_leds.allPulseOn) return;
+
+  switch (_leds.mode) {
+    case LED_FLASH_GREEN_PROMPT: {
+      // Half-second on/off on the green LED only.
+      const unsigned long interval = 500; // ms
+      if (now - _leds.lastToggle >= interval) {
+        _leds.lastToggle = now;
+        _leds.greenOn = !_leds.greenOn;
+        digitalWrite(LED_START_STOP_BUTTON,  _leds.greenOn ? HIGH : LOW);
+        digitalWrite(LED_CATEGORY_BUTTON, HIGH);
+        digitalWrite(LED_TEAMS_BUTTON,  HIGH);
+      }
+      break;
+    }
+    case LED_IDLE:
+    default:
+      // Keep LEDs in whatever state caller set (typically off)
+      break;
+  }
+}
+
+// Fun power-on light show; short and harmless to boot time. also used when a team wins
+void leds_power_on_show() {
+  // quick chase
+  for (int i = 0; i < 3; ++i) {
+    digitalWrite(LED_TEAMS_BUTTON,  HIGH); delay(90);
+    digitalWrite(LED_TEAMS_BUTTON,  LOW);
+    digitalWrite(LED_START_STOP_BUTTON,  HIGH); delay(90);
+    digitalWrite(LED_START_STOP_BUTTON,  LOW);
+    digitalWrite(LED_CATEGORY_BUTTON, HIGH); delay(90);
+    digitalWrite(LED_CATEGORY_BUTTON, LOW);
+    digitalWrite(LED_TEAMS_BUTTON,  HIGH); delay(90);
+    digitalWrite(LED_TEAMS_BUTTON,  LOW);
+    digitalWrite(LED_START_STOP_BUTTON,  HIGH); delay(90);
+    digitalWrite(LED_START_STOP_BUTTON,  LOW);
+    digitalWrite(LED_CATEGORY_BUTTON, HIGH); delay(90);
+    digitalWrite(LED_CATEGORY_BUTTON, LOW);
+  }
+  // sparkle burst (two times)
+  for (int i = 0; i < 4; ++i) {
+    leds_all(true);  delay(70);
+    leds_all(false); delay(70);
+  }
+  // settle off
+  leds_all(false);
+}
+
 
 // ===== LCD + SD =====
 LiquidCrystal lcd(LCD_PIN_RS, LCD_PIN_E, LCD_PIN_D4, LCD_PIN_D5, LCD_PIN_D6, LCD_PIN_D7);
@@ -431,8 +533,9 @@ bool getNextWordFromDeck(String &out) {
 // ============================================================================
 // Beeps
 // ============================================================================
-void beep_tic()      { if (!muted) tone(SPEAKER_PIN, 300, 30); }
-void beep_toc()      { if (!muted) tone(SPEAKER_PIN, 300, 30); }
+void beep_tic()      { if (!muted) tone(SPEAKER_PIN, 300, 30); leds_pulse_all(60); }
+void beep_toc()      { if (!muted) tone(SPEAKER_PIN, 300, 30); leds_pulse_all(60); }
+
 void beep_times_up() {
   if (!muted) {
     tone(SPEAKER_PIN, 300, 300); delay(300);
@@ -463,6 +566,11 @@ void startRound() {
   lcd.clear();
   // Do NOT build/reshuffle here manually; we build on demand inside getNextWordFromDeck()
   gameState = IN_ROUND;
+
+  // Stop the READY green blink; round LEDs are driven by beeps
+  leds_set_mode(LED_IDLE);
+  leds_all(false);  // start dark; pulses will flash them
+
   cur_beep_interval = 0;
   next_is_tic = true;
   last_tictoc_millis = 0;
@@ -483,12 +591,16 @@ void startRound() {
 
 void endRound(bool timesUp = true) {
   if (timesUp) beep_times_up();
+  for (int i = 0; i < 5; ++i) { leds_all(true); delay(120); leds_all(false); delay(120); } // lights leds at end of round
+
   gameState = READY;
 
   // Show "Press Start" centered
   String topC = centerPad("Green: Start", TOP_TEXT_LEN);
   String botC = centerPad("", BOTTOM_TEXT_LEN);
   showScoresAndTextCentered(topC, botC);
+  leds_set_mode(LED_FLASH_GREEN_PROMPT); // flash the green led
+
 }
 
 void do_tic_toc() {
@@ -552,10 +664,17 @@ void setup() {
 
   beep_power_on();
 
+  // --- LED system init + power-on show. LED fuctions at top of script ---
+  leds_begin(); // function to turn off LEDs since they ar turned on at the beginning of this setup() method
+  leds_power_on_show();
+
   // Initial screen: "Press Start" centered with scores.
   String topC = centerPad("Green: Start", TOP_TEXT_LEN); // this message is only displayed on initial starup. Another text
   String botC = centerPad("", BOTTOM_TEXT_LEN);
   showScoresAndTextCentered(topC, botC);
+
+  // Show the READY prompt and start blinking the green LED
+  leds_set_mode(LED_FLASH_GREEN_PROMPT);
 
   gameState = READY;
   score_team1 = 0; 
@@ -583,6 +702,7 @@ void loop() {
       String topC = centerPad("Green: Start", TOP_TEXT_LEN);
       String botC = centerPad("", BOTTOM_TEXT_LEN);
       showScoresAndTextCentered(topC, botC);
+      leds_set_mode(LED_FLASH_GREEN_PROMPT); // flash the green start/stop button led
     }
   }
 
@@ -597,11 +717,13 @@ void loop() {
           lcd.clear(); 
           lcd.setCursor(0,0); lcd.print(F("Blue Team Wins!"));
           beep_win_game();
+          leds_power_on_show();
           gameState = GAME_DONE; 
         } else { 
           String topC = centerPad("Green: Start", TOP_TEXT_LEN);
           String botC = centerPad("", BOTTOM_TEXT_LEN);
           showScoresAndTextCentered(topC, botC);
+          leds_set_mode(LED_FLASH_GREEN_PROMPT); // flash the green start/stop button led
         }
       }
 
@@ -612,11 +734,13 @@ void loop() {
           lcd.clear(); 
           lcd.setCursor(0,0); lcd.print(F("Red Team Wins!"));
           beep_win_game();
+          leds_power_on_show();
           gameState = GAME_DONE; 
         } else { 
           String topC = centerPad("Green: Start", TOP_TEXT_LEN);
           String botC = centerPad("", BOTTOM_TEXT_LEN);
           showScoresAndTextCentered(topC, botC);
+          leds_set_mode(LED_FLASH_GREEN_PROMPT); // flash the green start/stop button led
         }
       }
       break;
@@ -643,9 +767,14 @@ void loop() {
         String botC = centerPad("", BOTTOM_TEXT_LEN);
         showScoresAndTextCentered(topC, botC);
         gameState = READY;
+        leds_set_mode(LED_FLASH_GREEN_PROMPT); // flash the green start/stop button led
       }
       break;
   }
 
+  // Non-blocking LED animations
+  leds_update();
+
   delay(5);
 }
+
