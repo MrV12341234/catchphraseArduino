@@ -1,0 +1,224 @@
+Latitude
+Longitude
+Equator
+Prime Meridian
+North Pole
+South Pole
+Pacific Ocean
+Atlantic Ocean
+Arctic Ocean
+Southern Ocean
+Indian Ocean
+North America
+South America
+Africa
+Europe
+Asia
+Antarctica
+Movement
+Region
+HEI
+Location
+Place
+Relative Location
+Absolute Location
+Compass Rose
+Scale bar
+Title
+Border
+Archipelago
+Atoll
+Basin
+Bay
+Butte
+Canal
+Canyon
+Cape
+Cave
+Channel
+Col
+Continent
+Desert
+Estuary
+Fjord
+Glacier
+Hill
+Island
+Isthmus
+Lake
+Landform
+Lowland
+Mesa
+Mountain
+Ocean
+Peninsula
+Plain
+Plateau
+Pond
+River
+Sand Dunes
+Sea
+Stream
+Tributary
+Valley
+Volcano
+Waterfall
+Wetland
+River
+Tree
+Key
+Legend
+Physical Map
+Thematic map
+Special map
+North
+East
+South
+West
+Northeast
+Northwest
+Southeast
+Southwest
+Antigua And Barbuda
+Bahamas
+Barbados
+Belize
+Canada
+Costa Rica
+Cuba
+Dominica
+Dominican Republic
+El Salvador
+Grenada
+Guatemala
+Haiti
+Honduras
+Jamaica
+Mexico
+Nicaragua
+Panama
+Saint Lucia
+Trinidad And Tobago
+United States
+Argentina
+Bolivia
+Brazil
+Chile
+Colombia
+Ecuador
+Guyana
+Paraguay
+Peru
+Suriname
+Uruguay
+Venezuela
+Afghanistan
+Armenia
+Azerbaijan
+Bahrain
+Bangladesh
+Bhutan
+Brunei
+Cambodia
+China
+Cyprus
+Georgia
+India
+Indonesia
+Iran
+Iraq
+Israel
+Japan
+Jordan
+Kazakhstan
+Kuwait
+Kyrgyzstan
+Laos
+Lebanon
+Malaysia
+Maldives
+Mongolia
+Myanmar
+Nepal
+North Korea
+South Korea
+Oman
+Pakistan
+Palestine
+Philippines
+Qatar
+Saudi Arabia
+Singapore
+South Korea
+Sri Lanka
+Syria
+Taiwan
+Tajikistan
+Thailand
+Timor Leste
+Turkey
+Turkmenistan
+UAE
+Uzbekistan
+Vietnam
+Yemen
+Germany
+France
+Italy
+United Kingdom
+Spain
+Netherlands
+Switzerland
+Poland
+Sweden
+Belgium
+Austria
+Norway
+Ireland
+Denmark
+Finland
+Portugal
+Greece
+Czechia
+Romania
+Ukraine
+Hungary
+Slovakia
+Luxembourg
+Kenya
+Nigeria
+Rocky Mountains
+Appalachian Mountains
+Mississippi River
+Missouri River
+Great Lakes
+Great Plains
+Sierra Nevada
+Andes Mountains
+Amazon River
+Amazon Rainforest
+Atacama Desert
+Patagonia
+Iguazu Falls
+Ural Mountains
+Danube River
+Alps Mountains
+Pyrenees Mountains
+Volga River
+Baltic Sea
+Black Sea
+Arabian Desert
+Tigris River
+Euphrates River
+Dead Sea
+Sahara Desert
+Kalahari Desert
+Nile River
+Congo River
+Great Rift Valley
+Mount Kilimanjaro
+Atlas Mountains
+Lake Victoria
+Arabs
+Persians
+Kurds
