@@ -1,0 +1,10 @@
+One clue per line
+Phrases are okay
+Use normal spaces between words
+Blank lines are okay
+Comment lines can start with #
+Avoid super long single words (25+ characters)
+Avoid full sentences
+No commas needed but you can use. a comma wont seperate clues
+No quotation marks needed
+No numbering needed

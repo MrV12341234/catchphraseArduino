@@ -1,0 +1,302 @@
+Vampire
+Werewolf
+Zombie
+Ghoul
+Witch
+Warlock
+Ghost
+Phantom
+Specter
+Banshee
+Mummy
+Gorgon
+Lich
+Ogre
+Goblin
+Imp
+Demon
+Succubus
+Incubus
+Poltergeist
+Gremlin
+Gargoyle
+Wraith
+Harpy
+Kraken
+Wyvern
+Chimera
+Kelpie
+Revenant
+Shade
+Skeleton
+Corpse
+Bat
+Spider
+Black Cat
+Scarecrow
+Sorcerer
+Enchantress
+Fiend
+Bogeyman
+Creep
+Hag
+Nightmare
+Beast
+Behemoth
+Hellhound
+Lycan
+Valkyrie
+Dracula
+Nosferatu
+Frankenstein
+Igor
+Lamia
+Lilith
+Medusa
+Akasha
+Carmilla
+Bloody Mary
+Headless Horseman
+Sleepy Hollow
+Transylvania
+Salem
+Amityville
+Cauldron
+Broomstick
+Spellbook
+Grimoire
+Talisman
+Charm
+Amulet
+Candles
+Lantern
+Jackolantern
+Pumpkin
+Skull
+Tombstone
+Coffin
+Casket
+Shroud
+Mask
+Cloak
+Cape
+Fang
+Claw
+Talons
+Pitchfork
+Scythe
+Sickle
+Dagger
+Stake
+Chalice
+Grail
+Portal
+Mirror
+Crystal
+Cobweb
+Webbing
+Chains
+Manacles
+Grave
+Crypt
+Catacomb
+Sarcophagus
+Urn
+Hourglass
+Hour Hand
+Bell
+Rattle
+Torch
+Oil Lamp
+Rune
+Haunted House
+Haunted Manor
+Haunted Castle
+Abandoned Asylum
+Cursed Village
+Dark Forest
+Foggy Moor
+Graveyard
+Cemetery
+Old Chapel
+Crumbling Ruin
+Hidden Crypt
+Ancient Tomb
+Moonlit Field
+Night Garden
+Shadow Alley
+Ghost Town
+Witches Coven
+Cursed Harbor
+Bleak Swamp
+Black Lagoon
+Creepy Cabin
+Creaky Attic
+Dusty Cellar
+Secret Passage
+Halloween
+Samhain
+Hallowtide
+Allhallow
+Harvest
+Solstice
+Midnight
+Twilight
+Dusk
+Witching Hour
+Devils Night
+Full Moon
+Blood Moon
+Blue Moon
+New Moon
+Eclipse
+Equinox
+Enchantment
+Conjuring
+Summoning
+Hex
+Curse
+Jinx
+Omen
+Portent
+Prophecy
+Ritual
+Sacrifice
+Pact
+Covenant
+Seance
+Chant
+Whisper
+Scream
+Howl
+Moan
+Cackle
+Macabre
+Eerie
+Spooky
+Creepy
+Grim
+Gloom
+Dread
+Terror
+Horror
+Panic
+Fear
+Fright
+Doom
+Chaos
+Silence
+Shadows
+Darkness
+Night
+Nocturne
+Pirate
+Ninja
+Samurai
+Skeleton King
+Pumpkin Queen
+Forest Witch
+Grave Digger
+Mad Doctor
+Evil Clown
+Scary Doll
+Masked Killer
+Swamp Monster
+Plague Doctor
+Voodoo Priest
+Candy Witch
+Candy Corn
+Caramel Apple
+Toffee Apple
+Chocolate Bar
+Gummy Worms
+Jelly Beans
+Sweet Taffy
+Sugar Skulls
+Treat Bag
+Candy Bucket
+Raven
+Owl
+Crow
+Wolf
+Howling Wind
+Rattling Chains
+Creaking Door
+Thunderclap
+Lightning
+Footsteps
+Heartbeat
+Whispers
+Echoes
+Grave Bells
+Black Magic
+Dark Magic
+Blood Magic
+Old Magic
+Ancient Rites
+Forbidden Rites
+Eldritch Rite
+Occult Ritual
+Arcane Arts
+Grave Magic
+Bone Magic
+Bloodstain
+Clawmark
+Fangmark
+Scratch
+Scar
+Tatters
+Torn Veil
+Shadow Play
+Spirit Light
+Ectoplasm
+Mist
+Fog
+Miasma
+Haze
+Smoke
+Ashes
+Witch Hat
+Witch Brew
+Witch Fire
+Grave Soil
+Grave Dust
+Hocus Pocus
+Nightmare Before Christmas
+Coffin Nail
+Spider Silk
+Pumpkin Patch
+Pumpkin Spice
+Pumpkin Seed
+Bone Pile
+Skull Pile
+Bat Swarm
+Ghost Light
+Ghost Flame
+Ghost Dance
+Ghoul Feast
+Ghoul Mask
+Ghoul King
+House Haunt
+Monster Mash
+Costume Ball
+Spirit Walk
+Candle Walk
+Night Parade
+Harvest Fair
+Corn Maze
+Hay Ride
+Apple Bobbing
+Door Knock
+Candy Hunt
+Treat Trail
+Afterlife
+Netherworld
+Underworld
+Abyss
+Void
+Hades
+Tartarus
+Gehenna
+Pandemonium
+Pitch Black

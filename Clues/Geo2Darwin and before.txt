@@ -1,0 +1,287 @@
+Hydrogen
+Helium
+Lithium
+Beryllium
+Boron
+Carbon
+Nitrogen
+Oxygen
+Fluorine
+Neon
+Sodium
+Magnesium
+Aluminum
+Silicon
+Phosphorus
+Sulfur
+Chlorine
+Argon
+Potassium
+Calcium
+Scandium
+Titanium
+Vanadium
+Chromium
+Manganese
+Iron
+Cobalt
+Nickel
+Copper
+Zinc
+Gallium
+Germanium
+Arsenic
+Selenium
+Bromine
+Krypton
+Rubidium
+Strontium
+Yttrium
+Zirconium
+Niobium
+Molybdenum
+Technetium
+Ruthenium
+Rhodium
+Palladium
+Silver
+Cadmium
+Indium
+Tin
+Antimony
+Tellurium
+Iodine
+Xenon
+Cesium
+Barium
+Lanthanum
+Cerium
+Praseodymium
+Neodymium
+Promethium
+Samarium
+Europium
+Gadolinium
+Terbium
+Dysprosium
+Holmium
+Erbium
+Thulium
+Ytterbium
+Lutetium
+Hafnium
+Tantalum
+Tungsten
+Rhenium
+Osmium
+Iridium
+Platinum
+Gold
+Mercury
+Thallium
+Lead
+Bismuth
+Polonium
+Astatine
+Radon
+Francium
+Radium
+Actinium
+Thorium
+Protactinium
+Uranium
+Neptunium
+Plutonium
+Americium
+Curium
+Berkelium
+Californium
+Einsteinium
+Fermium
+Mendelevium
+Nobelium
+Lawrencium
+Rutherfordium
+Dubnium
+Seaborgium
+Bohrium
+Hassium
+Meitnerium
+Darmstadtium
+Roentgenium
+Copernicium
+Nihonium
+Flerovium
+Moscovium
+Livermorium
+Tennessine
+Oganesson
+Abiogenesis
+Adapt
+Ancestor
+Century
+Challenge
+Complex
+Creation
+Creature
+Galaxy
+Goddess
+History
+Human
+Origin
+Scale
+Scientific
+Space
+Threshold
+Universe
+Version
+Astronomer
+Atom
+Dense
+Fusion
+Gravity
+Matter
+Nebula
+Nuclear
+Star
+Uniform
+Supernova
+Accretion
+Continental Drift
+Determine
+Earthquake
+Evidence
+Extend
+Geology
+Historian
+Observe
+Orbit
+Planet
+Produce
+Scholar
+Scientist
+Solvent
+Surface
+System
+Tectonic Plates
+Crop
+Famine
+Varieties
+Qualities
+Extinct
+Preserve
+Historic
+Seeds
+Suggest
+Continent
+Flavor
+Species
+Experience
+Aware
+Curiously
+Single
+Season
+Interacting
+Apparently
+Look Something Over
+Statue of Liberty
+Times Square
+Golden Gate Bridge
+Niagara Falls
+Chichen Itza
+Machu Picchu
+United Arab Emirates
+Himalaya Mountains
+Mount Everest
+Gobi Desert
+Taklamakan Desert
+Karakoram Range
+Mekong River
+Yangtze River
+Yellow River
+Germany
+France
+Italy
+United Kingdom
+Spain
+Netherlands
+Switzerland
+Poland
+Sweden
+Belgium
+Austria
+Norway
+Ireland
+Denmark
+Finland
+Portugal
+Greece
+Volcano
+Waterfall
+Latitude
+Longitude
+Equator
+Prime Meridian
+North Pole
+South Pole
+Pacific Ocean
+Atlantic Ocean
+Arctic Ocean
+Southern Ocean
+Indian Ocean
+North America
+South America
+Africa
+Europe
+Asia
+Antarctica
+Australia
+United States
+China
+Japan
+India
+Russia
+Canada
+Brazil
+Mexico
+South Korea
+Turkey
+Indonesia
+Saudi Arabia
+Argentina
+Israel
+Singapore
+Thailand
+Philippines
+Vietnam
+Bangladesh
+Malaysia
+Colombia
+South Africa
+Romania
+Pakistan
+Czech Republic
+Iran
+Egypt
+Chile
+Peru
+Kazakhstan
+Algeria
+Nigeria
+Iraq
+New Zealand
+Hungary
+Qatar
+Ukraine
+Morocco
+Kuwait
+Slovakia
+Uzbekistan
+Kenya
+Ecuador
+Dominican Republic
+Bulgaria
+Guatemala
+Angola
+Ghana
+Ethiopia

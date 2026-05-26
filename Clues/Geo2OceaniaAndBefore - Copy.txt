@@ -1,0 +1,512 @@
+Latitude
+Longitude
+Equator
+Prime Meridian
+North Pole
+South Pole
+Pacific Ocean
+Atlantic Ocean
+Arctic Ocean
+Southern Ocean
+Indian Ocean
+North America
+South America
+Africa
+Europe
+Asia
+Antarctica
+Australia
+MR HELP
+Movement
+Region
+HEI
+Location
+Place
+Relative Location
+Absolute Location
+Compass Rose
+Scale bar
+Title
+Border
+Archipelago
+Atoll
+Basin
+Bay
+Butte
+Canal
+Canyon
+Cape
+Cave
+Channel
+Col
+Continent
+Desert
+Estuary
+Fjord
+Glacier
+Hill
+Island
+Isthmus
+Lake
+Landform
+Lowland
+Mesa
+Mountain
+Ocean
+Peninsula
+Plain
+Plateau
+Pond
+River
+Sand Dunes
+Sea
+Stream
+Tributary
+Valley
+Volcano
+Waterfall
+Wetland
+River
+Tree
+Key
+Legend
+Scale Bar
+Title
+Physical Map
+Thematic map
+Special map
+North
+East
+South
+West
+Northeast
+Northwest
+Southeast
+Southwest
+Antigua And Barbuda
+Bahamas
+Barbados
+Belize
+Canada
+Costa Rica
+Cuba
+Dominica
+Dominican Republic
+El Salvador
+Grenada
+Guatemala
+Haiti
+Honduras
+Jamaica
+Mexico
+Nicaragua
+Panama
+Saint Lucia
+Trinidad And Tobago
+United States
+Argentina
+Bolivia
+Brazil
+Chile
+Colombia
+Ecuador
+Guyana
+Paraguay
+Peru
+Suriname
+Uruguay
+Venezuela
+Afghanistan
+Armenia
+Azerbaijan
+Bahrain
+Bangladesh
+Bhutan
+Brunei
+Cambodia
+China
+Cyprus
+Georgia
+India
+Indonesia
+Iran
+Iraq
+Israel
+Japan
+Jordan
+Kazakhstan
+Kuwait
+Kyrgyzstan
+Laos
+Lebanon
+Malaysia
+Maldives
+Mongolia
+Myanmar
+Nepal
+North Korea
+South Korea
+Oman
+Pakistan
+Palestine
+Philippines
+Qatar
+Saudi Arabia
+Singapore
+South Korea
+Sri Lanka
+Syria
+Tajikistan
+Thailand
+Timor Leste
+Turkey
+Turkmenistan
+UAE
+Uzbekistan
+Vietnam
+Yemen
+Germany
+France
+Italy
+United Kingdom
+Spain
+Netherlands
+Switzerland
+Poland
+Sweden
+Belgium
+Austria
+Norway
+Ireland
+Denmark
+Finland
+Portugal
+Greece
+Czechia
+Romania
+Ukraine
+Hungary
+Slovakia
+Luxembourg
+Kenya
+Nigeria
+Rocky Mountains
+Appalachian Mountains
+Mississippi River
+Missouri River
+Great Lakes
+Great Plains
+Sierra Nevada
+Andes Mountains
+Amazon River
+Amazon Rainforest
+Atacama Desert
+Patagonia
+Iguazu Falls
+Ural Mountains
+Danube River
+Alps Mountains
+Pyrenees Mountains
+Volga River
+Baltic Sea
+Black Sea
+Arabian Desert
+Tigris River
+Euphrates River
+Dead Sea
+Sahara Desert
+Kalahari Desert
+Nile River
+Congo River
+Great Rift Valley
+Mount Kilimanjaro
+Atlas Mountains
+Lake Victoria
+Arabs
+Persians
+Kurds
+Aboriginal
+Nomadic
+Hawaii
+New Zealand
+Papua New Guinea
+Fiji
+Solomon Islands
+Vanuatu
+Samoa
+Tonga
+Tuvalu
+Kiribati
+Nauru
+Palau
+Marshall Islands
+Federated States of Micronesia
+United Arab Emirates
+Himalaya Mountains
+Mount Everest
+Gobi Desert
+Taklamakan Desert
+Karakoram Range
+Mekong River
+Yangtze River
+Yellow River
+Salween River
+Irrawaddy River
+Indus River
+Ganges River
+Brahmaputra River
+Godavari River
+Krishna River
+Red River
+Pearl River
+Tarim Basin
+Deccan Plateau
+Tibetan Plateau
+Caspian Sea
+Aral Sea
+Bay of Bengal
+Sea of Japan
+South China Sea
+East China Sea
+Persian Gulf
+Gulf of Thailand
+Mount Fuji
+Great Wall of China
+Angkor Wat
+Taj Mahal
+Borobudur Temple
+Bagan Temples
+Ha Long Bay
+Terracotta Army
+Meenakshi Temple
+Golden Temple
+Shwedagon Pagoda
+Marina Bay
+Gardens By the Bay
+Merlion Park
+Chiang Mai Old City
+Himeji Castle
+Ninh Binh
+Mt Bromo
+Ko Phi Phi
+Hanoi Old Quarter
+Forbidden City
+Summer Palace
+Jiuzhaigou Valley
+Jeju Island
+Bali Island
+Rhine River
+Thames River
+Seine River
+Po River
+Loire River
+Carpathian Mountains
+Caucasus Mountains
+Balkan Mountains
+Mount Elbrus
+Matterhorn
+Lake Geneva
+Lake Como
+Loch Ness
+North Sea
+English Channel
+Iberian Peninsula
+Scandinavian Peninsula
+Strait of Gibraltar
+Eiffel Tower
+Louvre Museum
+Colosseum
+Trevi Fountain
+Stonehenge
+Tower Bridge
+Buckingham Palace
+Acropolis Athens
+Santorini Island
+Grand Canyon
+Yellowstone National Park
+Yosemite Valley
+Statue of Liberty
+Times Square
+Golden Gate Bridge
+Niagara Falls
+Chichen Itza
+Machu Picchu
+Christ the Redeemer
+Salar de Uyuni
+Banff National Park
+Great Barrier Reef
+Uluru Rock
+Sydney Opera House
+Dubai Burj Khalifa
+Giza Pyramids
+Serengeti Park
+Table Mountain
+Victoria Falls
+Cape Town Waterfront
+Mount Kilimanjaro
+Blue Mosque
+Hagia Sophia
+Petra Jordan
+Denali Mountain
+Sierra Madre
+Rio Grande
+Hudson Bay
+Great Salt Lake
+Death Valley
+Everglades
+Mount Rainier
+Columbia River
+Colorado River
+Yukon River
+St Lawrence River
+Banff Mountains
+Amazon Basin
+Orinoco River
+Pantanal Wetlands
+Angel Falls
+Lake Titicaca
+Galapagos Islands
+Atacama Salt Flat
+Uyuni Salt Flat
+Parana River
+New York
+Los Angeles
+Mexico City
+Rio de Janeiro
+Buenos Aires
+Santiago
+Lima
+Bogota
+Toronto
+Vancouver
+London
+Paris
+Madrid
+Rome
+Berlin
+Moscow
+Istanbul
+Cairo
+Nairobi
+Lagos
+Johannesburg
+Dubai
+Abu Dhabi
+Riyadh
+Doha
+Mumbai
+Delhi
+Bengaluru
+Shanghai
+Beijing
+Anhui
+Fujian
+Gansu
+Guangdong
+Guizhou
+Hainan
+Hebei
+Heilongjiang
+Henan
+Hubei
+Hunan
+Jiangsu
+Jiangxi
+Jilin
+Liaoning
+Qinghai
+Shaanxi
+Shandong
+Shanxi
+Sichuan
+Yunnan
+Zhejiang
+Guangxi
+Inner Mongolia
+Ningxia
+Xinjiang
+Tibet
+Delta
+Floodplain
+Oasis
+Ridge
+Spur
+Gorge
+Harbor
+Lagoon
+Sound
+Terrace
+Foothills
+Snowline
+Permafrost
+Tundra
+Savanna
+Taiga
+Steppe
+Monsoon
+Typhoon
+Cyclone
+Hemisphere
+Cartography
+Atlas
+Compass
+Contour Line
+Elevation
+Relief Map
+Legend Box
+Grid Lines
+Border Line
+International Date Line
+Time Zone
+Estuary Mouth
+Headwaters
+Delta Plain
+Alluvial Fan
+Watershed
+Aquifer
+Water Table
+Irrigation
+Levee
+Dune Field
+Badlands
+Cinder Cone
+Caldera
+Lava Flow
+Fjord Valley
+Sea Stack
+Barrier Island
+Bight
+Bluff
+Armenia
+Georgia
+Azerbaijan
+Kazakhstan
+Uzbekistan
+Turkmenistan
+Kyrgyzstan
+Tajikistan
+Afghanistan
+Pakistan
+Russia
+Nepal
+India
+Maldives
+Mongolia
+China
+Bhutan
+Bangladesh
+Thailand
+Sri Lanka
+Singapore
+Laos
+Vietnam
+Cambodia
+Brunei
+Malaysia
+North Korea
+South Korea
+The Philippines
+East Timor
+Oceania
+Religion
+
