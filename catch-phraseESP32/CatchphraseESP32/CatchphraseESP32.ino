@@ -1,6 +1,6 @@
 /*
   ESP32 Catchphrase Game
-  Board: ESP32-2432S028 / 2.8 inch 240x320 touchscreen board
+  Board: ESP32-2432S028 / 2.8 inch 240x320 touchscreen board (Cheap Yellow Board CYB)
 
   Hardware used:
     - Built-in ILI9341 TFT screen
@@ -129,7 +129,7 @@ Arduino_DataBus *bus = new Arduino_ESP32SPI(
 Arduino_GFX *gfx = new Arduino_ILI9341(
   bus,
   TFT_RST,
-  1,      // landscape rotation
+  3,      // landscape rotation is 1 or 3 (change from 1 to 3 to flip the screen). Also need to change later in the script at "touchscreen.setRotation(3);" and "gfx->setRotation(3);"
   true   // IPS color inversion turned on/off
 );
 
@@ -393,7 +393,7 @@ void beginTouchMode() {
   auxSPI.begin(TP_CLK, TP_MISO, TP_MOSI, TP_CS);
 
   touchscreen.begin(auxSPI);
-  touchscreen.setRotation(1);
+  touchscreen.setRotation(3); // 1 and 3 are for landscape
 
   auxMode = AUX_TOUCH;
 }
@@ -1380,7 +1380,7 @@ void setup() {
   buzzerBegin();
 
   gfx->begin();
-  gfx->setRotation(1);
+  gfx->setRotation(3);
   gfx->setTextWrap(false);
 
   screenW = gfx->width();
